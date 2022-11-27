@@ -1,0 +1,59 @@
+version: '3.9'
+services:
+  repo-scanner:
+    container_name: repo_scanner_container
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PWD=${DB_PWD}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+    tty: true
+    build: .
+    ports:
+      - 8080:8080
+    restart: on-failure
+    env_file:
+      - .env
+    depends_on:
+      - postgresdb
+    networks:
+      - internal
+
+  postgresdb:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PWD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST}
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+    networks:
+      internal:
+        aliases:
+          - database
+
+  migrate:
+      image: migrate/migrate
+      container_name: migrate_container
+      networks:
+        - internal
+      volumes:
+        - ./migrates:/migrates
+      command: ["-path", "/migrates", "-database", "postgres://${DB_USER}:${DB_PWD}@database:5432/${DB_NAME}?sslmode=disable", "up", "3"]
+      restart: on-failure
+      links: 
+        - postgresdb
+      depends_on:
+        - postgresdb
+volumes:
+  pg_data:
+
+# Networks to be created to facilitate communication between containers
+networks:
+  internal:
+    driver: bridge
