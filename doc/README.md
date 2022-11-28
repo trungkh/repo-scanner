@@ -1,7 +1,7 @@
 # Documentation
 
 ## Reps-scanner Schema
-![](repo-scanner_schema.png | width=100)
+![](repo-scanner_schema.png)
 
 ## Scanning workflow
 ![](repo-scanner_workflows.png)
