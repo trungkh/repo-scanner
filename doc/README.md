@@ -1,13 +1,13 @@
-#Documentation
-             
-##Reps-scanner Schema
+# Documentation
+
+## Reps-scanner Schema
 ![](https://https://github.com/trungkh/repo-scanner/tree/main/doc/repo-scanner_schema.png)
 
-##Scanning workflow
+## Scanning workflow
 ![](https://https://github.com/trungkh/repo-scanner/tree/main/doc/repo-scanner_workflows.png)
 
-##APIs
-###API Get repository list
+## APIs
+### API Get repository list
 `GET <hostname>:8080/v1/repositories`
 Get list of repositories.
 
@@ -65,7 +65,7 @@ Response
     "meta": null
 }
 ```
-###API Create new repository
+### API Create new repository
 `POST <hostname>:8080/v1/repository`
 Create new repository.
 
@@ -122,7 +122,7 @@ Response
     "meta": null
 }
 ```
-###API Edit repository
+### API Edit repository
 `PUT <hostname>:8080/v1/repository/{repository_id}`
 Edit existing repository by given *{repository_id}*.
 
@@ -182,7 +182,7 @@ Response
     "meta": null
 }
 ```
-###API Delete repository
+### API Delete repository
 `DEL <hostname>:8080/v1/repository/{repository_id}`
 Delete existing repository by given *{repository_id}*.
 
@@ -217,7 +217,7 @@ Response
     "meta": null
 }
 ```
-###API Trigger a scan
+### API Trigger a scan
 `POST <hostname>:8080/v1/repository/{repository_id}/scan`
 Trigger a scan by given *{repository_id}*.
 
@@ -273,7 +273,7 @@ Response
     "meta": null
 }
 ```
-###API Get scanning results
+### API Get scanning results
 `GET <hostname>:8080/v1/scanning/result`
 Get list of recent results.
 
