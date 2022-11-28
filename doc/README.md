@@ -1,10 +1,10 @@
 # Documentation
 
 ## Reps-scanner Schema
-![](/repo-scanner_schema.png)
+![](repo-scanner_schema.png)
 
 ## Scanning workflow
-![](/repo-scanner_workflows.png)
+![](repo-scanner_workflows.png)
 
 ## APIs
 ### API Get repository list
@@ -36,6 +36,7 @@ Field  | Type  | Location  | Description
 | 400 | Invalid query provided |
 
 **Example**
+
 Request
 ```bash
 $ curl -X GET 'localhost:8080/v1/repositories' \
@@ -96,6 +97,7 @@ Field  | Type  | Location  | Description
 | 400 | Invalid url provided |
 
 **Example**
+
 Request
 ```bash
 $ curl -X POST 'localhost:8080/v1/repository' \
@@ -158,6 +160,7 @@ Field  | Type  | Location  | Description
 | 406 | Nothing to update |
 
 **Example**
+
 Request
 ```bash
 $ curl -X PUT 'localhost:8080/v1/repository/3' \
@@ -204,6 +207,7 @@ Field  | Type  | Location  | Description
 | 400 | Repository not found |
 
 **Example**
+
 Request
 ```bash
 $ curl -X DEL 'localhost:8080/v1/repository/3' \
@@ -253,6 +257,7 @@ Field  | Type  | Location  | Description
 | 400 | Repository is inactive |
 
 **Example**
+
 Request
 ```bash
 $ curl -X POST 'localhost:8080/v1/repository/3/scan' \
@@ -313,6 +318,7 @@ Field  | Type  | Location  | Description
 | 400 | Invalid query provided |
 
 **Example**
+
 Request
 ```bash
 $ curl -X GET 'localhost:8080/v1/scanning/result' \
