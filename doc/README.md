@@ -366,4 +366,19 @@ Response
     "meta": null
 }
 ```
-                
+
+## Some words
++ Repo-scanner needs bellow components:
+    + Gin-gonic for web frameworks.
+    + Grab <a href="https://github.com/grab/secret-scanner">secrect-scanner</a> based on <a href="https://github.com/michenriksen/gitrob">Gitrob</a>.
+    + PostgresSQL database.
++ Designed by 3 main layers:
+    + Delivery layer: for input validation and handling response as JSON.
+    + Usecase layer: for business logic handling.
+    + Repository layer: for database input/output.
+    + And other libraries
++ Why do I chose secrect-scanner as repository scanner?
+    + It can scan directly to github and other git providers like gitlab and bitbucket.
+    + It can scan any kind of repo written by any programming language, not scoped in golang.
+    + However, I haven't found any way to scan secret word prefix by `public_key`/`private_key`. This could be cons by the library even I think about <a href="https://github.com/securego/gosec">gosec</a> could solve my problem, though. But not enough time.
++ Tried too much for cover UT cases as much as possible, so lacking of significant cases when time up :(.
