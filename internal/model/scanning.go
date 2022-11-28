@@ -43,7 +43,7 @@ type (
 
 	ScanningResponse struct {
 		Id         int64          `json:"scanning_id" db:"scanning_id"`
-		Name       string         `json:"repository_id" db:"repository_id"`
+		RepoId     int64          `json:"repository_id" db:"repository_id"`
 		Findings   types.JSONText `json:"findings" db:"findings"`
 		Status     string         `json:"scanning_status" db:"scanning_status"`
 		QueuedAt   time.Time      `json:"queued_at" db:"queued_at"`
