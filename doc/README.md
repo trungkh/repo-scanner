@@ -1,14 +1,15 @@
 # Documentation
 
 ## Reps-scanner Schema
-![](https://https://github.com/trungkh/repo-scanner/tree/main/doc/repo-scanner_schema.png)
+![](/repo-scanner_schema.png)
 
 ## Scanning workflow
-![](https://https://github.com/trungkh/repo-scanner/tree/main/doc/repo-scanner_workflows.png)
+![](/repo-scanner_workflows.png)
 
 ## APIs
 ### API Get repository list
 `GET <hostname>:8080/v1/repositories`
+
 Get list of repositories.
 
 **Inputs**
@@ -67,6 +68,7 @@ Response
 ```
 ### API Create new repository
 `POST <hostname>:8080/v1/repository`
+
 Create new repository.
 
 **Inputs**
@@ -124,6 +126,7 @@ Response
 ```
 ### API Edit repository
 `PUT <hostname>:8080/v1/repository/{repository_id}`
+
 Edit existing repository by given *{repository_id}*.
 
 **Inputs**
@@ -184,6 +187,7 @@ Response
 ```
 ### API Delete repository
 `DEL <hostname>:8080/v1/repository/{repository_id}`
+
 Delete existing repository by given *{repository_id}*.
 
 **Inputs**
@@ -219,6 +223,7 @@ Response
 ```
 ### API Trigger a scan
 `POST <hostname>:8080/v1/repository/{repository_id}/scan`
+
 Trigger a scan by given *{repository_id}*.
 
 **Inputs**
@@ -275,6 +280,7 @@ Response
 ```
 ### API Get scanning results
 `GET <hostname>:8080/v1/scanning/result`
+
 Get list of recent results.
 
 **Inputs**
