@@ -34,3 +34,9 @@ Build and start the services with:
 ```bash
 $ docker-compose up --build
 ```
+
+### Run test cases
+Build and start the services with:
+```bash
+$ go test -v ./...
+```

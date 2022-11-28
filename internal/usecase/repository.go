@@ -31,7 +31,7 @@ func (r repositoryUsecase) GetRepositoryList(req model.RepositoryListRequest) (r
 }
 
 func (r repositoryUsecase) AddRepository(req model.AddRepositoryRequest) (res model.AddRepositoryResponse, errx serror.SError) {
-	var tx internal.ITrx
+	var tx *model.Trx
 	tx, errx = r.trxRepository.Create()
 	if errx != nil {
 		errx.AddComments("[usecase][AddRepository] while create new transaction")
@@ -46,7 +46,7 @@ func (r repositoryUsecase) AddRepository(req model.AddRepositoryRequest) (res mo
 		}
 	}()
 
-	res, errx = r.repositoryRepository.AddRepository(tx.(*model.Trx), req)
+	res, errx = r.repositoryRepository.AddRepository(tx, req)
 	if errx != nil {
 		errx.AddComments("[usecase][AddRepository] while add repository")
 		return

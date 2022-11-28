@@ -10,6 +10,7 @@ services:
       - DB_PORT=${DB_PORT}
     tty: true
     build: .
+    dns: 8.8.8.8
     ports:
       - 8080:8080
     restart: on-failure

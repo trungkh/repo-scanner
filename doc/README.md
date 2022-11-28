@@ -304,7 +304,7 @@ Field  | Type  | Location  | Description
 | **scanning_id** | integer | Scanning ID |
 | **repository_name** | string | Repository Name |
 | **repository_url** | string | Repository Url |
-| **scanning_status** | string | Scanning Status<br />`queued` is in queue<br />`in_progress` is in progress<br />`success` is successful<br />`failure` is failed |
+| **scanning_status** | string | Scanning Status:<br />`queued` is in queue<br />`in_progress` is in progress<br />`success` is successful<br />`failure` is failed |
 | **findings** | array[object] | Finding results |
 | **queued_at** | timestampt | Queued Time |
 | **scanning_at** | timestampt | Scanning Time |
@@ -362,7 +362,7 @@ Response
             "scanning_at": "2022-11-28T12:02:46.565262Z",
             "finished_at": "2022-11-28T12:02:49.866722Z"
         }
-	],
+    ],
     "meta": null
 }
 ```

@@ -90,12 +90,13 @@ func TestGetRepositoryList(t *testing.T) {
 func TestAddRepository(t *testing.T) {
 	repoMock := new(mocks.IRepositoryRepository)
 	trxMock := new(mocks.ITrxRepository)
+	txMock := new(mocks.ITrx)
 
 	listTests := []struct {
 		name    string
 		mock    func()
 		args    model.AddRepositoryRequest
-		want    interface{}
+		want    model.AddRepositoryResponse
 		wantErr bool
 	}{
 		{
@@ -111,13 +112,14 @@ func TestAddRepository(t *testing.T) {
 					Url:      "github.com/jquery/jquery",
 					IsActive: true,
 				}
+
 				tx := model.Trx{
 					DB: &sqlx.DB{},
-					Tx: &sqlx.Tx{},
 				}
 
-				repoMock.On("AddRepository", nil, args).Return(w, nil).Once()
+				repoMock.On("AddRepository", &tx, args).Return(w, nil).Once()
 				trxMock.On("Create", mock.Anything).Return(&tx, nil).Once()
+				txMock.On("Admit", mock.Anything).Return(nil).Once()
 			},
 			args: model.AddRepositoryRequest{
 				Name: "JQuery",
@@ -131,18 +133,6 @@ func TestAddRepository(t *testing.T) {
 			},
 			wantErr: false,
 		},
-		/*{
-			name: "error",
-			mock: func() {
-				e := errors.New("error")
-				w := serror.NewFromErrorc(e, "[usecase][AddRepository] add new repository")
-
-				repoMock.On("AddRepository", mock.Anything).
-					Return(model.AddRepositoryResponse{}, w).Once()
-			},
-			want:    model.AddRepositoryResponse{},
-			wantErr: true,
-		},*/
 	}
 
 	for _, test := range listTests {
@@ -157,6 +147,92 @@ func TestAddRepository(t *testing.T) {
 
 		if (err != nil) != test.wantErr {
 			t.Errorf("AddRepository() got error : %s", err)
+		}
+
+		if test.wantErr {
+			assert.Equal(t, test.want, res)
+			assert.Error(t, err.Cause())
+		}
+
+		if !test.wantErr {
+			assert.Equal(t, test.want, res)
+			assert.Equal(t, nil, err)
+		}
+	}
+}
+
+func TestEditRepository(t *testing.T) {
+	repoMock := new(mocks.IRepositoryRepository)
+	trxMock := new(mocks.ITrxRepository)
+	txMock := new(mocks.ITrx)
+
+	repoName := "JQuery"
+
+	listTests := []struct {
+		name    string
+		mock    func()
+		args    model.EditRepositoryRequest
+		want    model.EditRepositoryResponse
+		wantErr bool
+	}{
+		{
+			name: "ok",
+			mock: func() {
+				args := model.EditRepositoryRequest{
+					Id:       3,
+					Name:     &repoName,
+					Url:      nil,
+					IsActive: nil,
+				}
+				w := model.EditRepositoryResponse{
+					Id:       3,
+					Name:     "JQuery",
+					Url:      "github.com/jquery/jquery",
+					IsActive: true,
+				}
+				o := model.Repository{
+					Id:       3,
+					Name:     "New JQuery",
+					Url:      "github.com/jquery/jquery",
+					IsActive: true,
+				}
+				tx := model.Trx{
+					DB: &sqlx.DB{},
+				}
+
+				repoMock.On("GetRepositoryById", mock.Anything).Return(&o, nil).Once()
+				repoMock.On("EditRepository", &tx, args).Return(w, nil).Once()
+				trxMock.On("Create", mock.Anything).Return(&tx, nil).Once()
+				txMock.On("Admit", mock.Anything).Return(nil).Once()
+			},
+			args: model.EditRepositoryRequest{
+				Id:       3,
+				Name:     &repoName,
+				Url:      nil,
+				IsActive: nil,
+			},
+			want: model.EditRepositoryResponse{
+				Id:       3,
+				Name:     "JQuery",
+				Url:      "github.com/jquery/jquery",
+				IsActive: true,
+			},
+			wantErr: false,
+		},
+	}
+
+	for _, test := range listTests {
+		test.mock()
+
+		repoUsecase := repositoryUsecase{
+			repositoryRepository: repoMock,
+			trxRepository:        trxMock,
+		}
+
+		res, err := repoUsecase.EditRepository(test.args)
+
+		if (err != nil) != test.wantErr {
+			t.Errorf("EditRepository() got error : %s", err)
 		}
 
 		if test.wantErr {

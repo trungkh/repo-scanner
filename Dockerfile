@@ -19,6 +19,7 @@ RUN adduser -D -h /repo-scanner -u 1000 -k /dev/null repo-scanner
 WORKDIR /repo-scanner
 COPY --from=go-builder --chown=nobody:nobody /repo-scanner/build build
 COPY --chown=nobody:nobody .env .
+RUN apk add git
 EXPOSE 8080
 USER repo-scanner
 CMD [ "./build/server" ]

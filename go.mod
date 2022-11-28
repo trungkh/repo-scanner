@@ -3,6 +3,8 @@ module repo-scanner
 go 1.18
 
 require (
+	bou.ke/monkey v1.0.2
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/gearintellix/serr v1.1.8
 	github.com/gearintellix/structs v1.1.5
 	github.com/gearintellix/u2 v1.0.9
