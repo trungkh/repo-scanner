@@ -30,13 +30,13 @@ You can define paths to be excluded from scanning by defining them in a comma se
 `SKIP_TEST_PATHS` defines any test directories/files that you would like to skip. It is being kept separately from `SKIP_PATHS` because sometimes it may be useful to scan the test files as well. You can toggle to scan test files by giving `-skip-tests=false` in the CLI.
 
 ### Boot Up
-Build and start the services with:
+Build and start the containers with:
 ```bash
 $ docker-compose up --build
 ```
 
 ### Run test cases
-Build and start the services with:
+Running UTs:
 ```bash
 $ go test -v ./...
 ```
