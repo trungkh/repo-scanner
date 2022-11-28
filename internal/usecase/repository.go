@@ -31,7 +31,7 @@ func (r repositoryUsecase) GetRepositoryList(req model.RepositoryListRequest) (r
 }
 
 func (r repositoryUsecase) AddRepository(req model.AddRepositoryRequest) (res model.AddRepositoryResponse, errx serror.SError) {
-	var tx *model.Trx
+	var tx internal.ITrx
 	tx, errx = r.trxRepository.Create()
 	if errx != nil {
 		errx.AddComments("[usecase][AddRepository] while create new transaction")
@@ -39,21 +39,21 @@ func (r repositoryUsecase) AddRepository(req model.AddRepositoryRequest) (res mo
 	}
 	defer func() {
 		if errx != nil {
-			errs := tx.Rollback()
+			errs := tx.Abort()
 			if errs != nil {
 				log.Error("[usecase][AddRepository] Failed to rollback")
 			}
 		}
 	}()
 
-	res, errx = r.repositoryRepository.AddRepository(tx, req)
+	res, errx = r.repositoryRepository.AddRepository(tx.(*model.Trx), req)
 	if errx != nil {
 		errx.AddComments("[usecase][AddRepository] while add repository")
 		return
 	}
 
 	if errx == nil {
-		err := tx.Commit()
+		err := tx.Admit()
 		if err != nil {
 			errx = serror.NewFromError(err)
 			errx.AddCommentf("[usecase][AddRepository] Failed to commit transaction")
@@ -103,7 +103,7 @@ func (r repositoryUsecase) EditRepository(req model.EditRepositoryRequest) (res 
 	}
 	defer func() {
 		if errx != nil {
-			errs := tx.Rollback()
+			errs := tx.Abort()
 			if errs != nil {
 				log.Error("[usecase][EditRepository] Failed to rollback")
 			}
@@ -116,7 +116,7 @@ func (r repositoryUsecase) EditRepository(req model.EditRepositoryRequest) (res 
 		return
 	}
 	if errx == nil {
-		err := tx.Commit()
+		err := tx.Admit()
 		if err != nil {
 			errx = serror.NewFromError(err)
 			errx.AddCommentf("[usecase][EditRepository] Failed to commit transaction")
@@ -145,7 +145,7 @@ func (r repositoryUsecase) DeleteRepository(repo_id int64) (errx serror.SError) 
 	}
 	defer func() {
 		if errx != nil {
-			errs := tx.Rollback()
+			errs := tx.Abort()
 			if errs != nil {
 				log.Error("[usecase][DeleteRepository] Failed to rollback")
 			}
@@ -158,7 +158,7 @@ func (r repositoryUsecase) DeleteRepository(repo_id int64) (errx serror.SError) 
 		return
 	}
 	if errx == nil {
-		err := tx.Commit()
+		err := tx.Admit()
 		if err != nil {
 			errx = serror.NewFromError(err)
 			errx.AddCommentf("[usecase][DeleteRepository] Failed to commit transaction")

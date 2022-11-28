@@ -61,7 +61,7 @@ func (s scanningUsecase) AddNewScanning(repo_id int64) (res model.ScanningRespon
 	}
 	defer func() {
 		if errx != nil {
-			errs := tx.Rollback()
+			errs := tx.Abort()
 			if errs != nil {
 				log.Error("[usecase][AddNewScanning] Failed to rollback")
 			}
@@ -75,7 +75,7 @@ func (s scanningUsecase) AddNewScanning(repo_id int64) (res model.ScanningRespon
 	}
 
 	if errx == nil {
-		err := tx.Commit()
+		err := tx.Admit()
 		if err != nil {
 			errx = serror.NewFromError(err)
 			errx.AddCommentf("[usecase][AddNewScanning] Failed to commit transaction")
