@@ -14,10 +14,10 @@ Get list of repositories.
 
 **Inputs**
 
-Field  | Type  | Location  | Description
-------------- | ------------- | ------------- | -------------
-**limit** *(optional)* | integer  | query | Element amount in one page (10 items by default)
-**page** *(optional)* | integer | query | Page offset (1 by default)
+Field | Required | Type | Location | Description
+------------- | ------------- | ------------- | ------------- | -------------
+**limit** | *(optional)* | integer  | query | Element amount in one page (10 items by default)
+**page** | *(optional)* | integer | query | Page offset (1 by default)
 
 **Outputs**
 
@@ -74,10 +74,10 @@ Create new repository.
 
 **Inputs**
 
-Field  | Type  | Location  | Description
-------------- | ------------- | ------------- | -------------
-**repository_name** *(required)* | string  | body | Repository Name
-**repository_url** *(required)* | string | body | Repository Url
+Field | Required | Type | Location | Description
+------------- | ------------- | ------------- | ------------- | -------------
+**repository_name** | *(required)* | string  | body | Repository Name
+**repository_url** | *(required)* | string | body | Repository Url
 
 **Outputs**
 
@@ -133,12 +133,12 @@ Edit existing repository by given *{repository_id}*.
 
 **Inputs**
 
-Field  | Type  | Location  | Description
-------------- | ------------- | ------------- | -------------
-**repository_id** *(required)* | integer | path | Repository ID
-**repository_name** *(optional)* | string  | body | Repository Name
-**repository_url** *(optional)* | string | body | Repository Url
-**is_active** *(optional)* | boolean | body | `false` is inactive, `true` is active
+Field | Required | Type | Location | Description
+------------- | ------------- | ------------- | ------------- | -------------
+**repository_id** | *(required)* | integer | path | Repository ID
+**repository_name** | *(optional)* | string  | body | Repository Name
+**repository_url** | *(optional)* | string | body | Repository Url
+**is_active** | *(optional)* | boolean | body | `false` is inactive, `true` is active
 
 **Outputs**
 
@@ -195,9 +195,9 @@ Delete existing repository by given *{repository_id}*.
 
 **Inputs**
 
-Field  | Type  | Location  | Description
-------------- | ------------- | ------------- | -------------
-**repository_id** *(required)* | integer | path | Repository ID
+Field | Required | Type | Location | Description
+------------- | ------------- | ------------- | ------------- | -------------
+**repository_id** | *(required)* | integer | path | Repository ID
 
 **Output Status**
 
@@ -232,9 +232,9 @@ Trigger a scan by given *{repository_id}*.
 
 **Inputs**
 
-Field  | Type  | Location  | Description
-------------- | ------------- | ------------- | -------------
-**repository_id** *(required)* | integer  | path | Repository ID
+Field | Required | Type | Location | Description
+------------- | ------------- | ------------- | ------------- | -------------
+**repository_id** | *(required)* | integer  | path | Repository ID
 
 **Outputs**
 
@@ -290,12 +290,12 @@ Get list of recent results.
 
 **Inputs**
 
-Field  | Type  | Location  | Description
-------------- | ------------- | ------------- | -------------
-**limit** *(optional)* | integer  | query | Element amount in one page (10 items by default)
-**page** *(optional)* | integer | query | Page offset (1 by default)
-**sort** *(optional)* | string | query | Sort by created time:<br />`asc` - ascending<br />`desc` - descending (by default)
-**status** *(optional)* | string | query | Filter scanning status:<br />`all` - get all (by default)<br />`queued` - in queue<br />`in_progress` - in progress<br />`success` - successful<br />`failure` - failed
+Field | Required | Type | Location | Description
+------------- | ------------- | ------------- | ------------- | -------------
+**limit** | *(optional)* | integer  | query | Element amount in one page (10 items by default)
+**page** | *(optional)* | integer | query | Page offset (1 by default)
+**sort** | *(optional)* | string | query | Sort by created time:<br />`asc` - ascending<br />`desc` - descending (by default)
+**status** | *(optional)* | string | query | Filter scanning status:<br />`all` - get all (by default)<br />`queued` - in queue<br />`in_progress` - in progress<br />`success` - successful<br />`failure` - failed
 
 **Outputs**
 
@@ -377,7 +377,7 @@ Response
     + Usecase layer: for business logic handling.
     + Repository layer: for database input/output.
     + And other libraries
-+ Why do I chose secrect-scanner as repository scanner?
++ Why do I chose secret-scanner as repository scanner?
     + It can scan directly to github and other git providers like gitlab and bitbucket.
     + It can scan any kind of repo written by any programming language, not scoped in golang.
     + However, I haven't found any way to scan secret word prefix by `public_key`/`private_key`. This could be cons by the library even I think about <a href="https://github.com/securego/gosec">gosec</a> could solve my problem, though. But not enough time.

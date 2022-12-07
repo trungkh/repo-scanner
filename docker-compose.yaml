@@ -17,12 +17,17 @@ services:
     env_file:
       - .env
     depends_on:
-      - postgresdb
+      postgresdb:
+        condition: service_healthy
+      migrate:
+        condition: service_started
+    links: 
+      - postgresdb:postgresdb
     networks:
       - internal
 
   postgresdb:
-    image: postgres:latest
+    image: postgres:10.22-alpine
     container_name: postgres_container
     environment:
       - POSTGRES_USER=${DB_USER}
@@ -30,13 +35,18 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - DATABASE_HOST=${DB_HOST}
     ports:
-      - '5432:5432'
+      - '${DB_PORT}:${DB_PORT}'
     volumes:
       - ./pg_data:/var/lib/postgresql/data
     networks:
       internal:
         aliases:
           - database
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   migrate:
       image: migrate/migrate
@@ -45,12 +55,10 @@ services:
         - internal
       volumes:
         - ./migrates:/migrates
-      command: ["-path", "/migrates", "-database", "postgres://${DB_USER}:${DB_PWD}@database:5432/${DB_NAME}?sslmode=disable", "up", "3"]
-      restart: on-failure
-      links: 
-        - postgresdb
+      command: ["-path", "/migrates", "-database", "postgres://${DB_USER}:${DB_PWD}@database:${DB_PORT}/${DB_NAME}?sslmode=disable", "up", "3"]
       depends_on:
-        - postgresdb
+        postgresdb:
+          condition: service_healthy
 volumes:
   pg_data:
 
