@@ -2,13 +2,16 @@ package response
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 
 	"repo-scanner/internal/utils/serror"
+	"repo-scanner/internal/utils/utarray"
 	"repo-scanner/internal/utils/utint"
 	"repo-scanner/internal/utils/utstring"
 )
@@ -48,16 +51,16 @@ type ResponseBody struct {
 }
 
 type ReturningError struct {
-	UserMessage     string
-	InternalMessage string
-	Code            int
-	MoreInfo        string
+	UserMessage     string `json:"user_message"`
+	InternalMessage string `json:"internal_message"`
+	Code            int    `json:"code"`
+	MoreInfo        string `json:"more_info"`
 }
 
 type ReturningValue struct {
-	Status  int
-	Message map[string]string
-	Err     []ReturningError
+	Status  int               `json:"status"`
+	Message map[string]string `json:"message"`
+	Err     []ReturningError  `json:"errors"`
 }
 
 func add(status int, eng string, vne string) ReturningValue {
@@ -148,6 +151,28 @@ func ResultWithMeta(ctx *gin.Context, code int, data interface{}, meta interface
 	ctx.JSON(result.Status, body)
 }
 
+func CaptureSErrors(errors ...serror.SError) (res []ReturningError) {
+	for _, v := range errors {
+		err := ReturningError{
+			UserMessage:     v.Title(),
+			InternalMessage: v.SimpleString(),
+			Code:            v.Line(),
+			MoreInfo:        fmt.Sprintf("file://%s", v.File()),
+		}
+
+		if v.Code() != 0 {
+			err.Code = v.Code()
+		}
+
+		if !utarray.IsExist(v.Key(), []string{"-", ""}) {
+			err.MoreInfo = fmt.Sprintf("%s", v.Key())
+		}
+
+		res = append(res, err)
+	}
+	return
+}
+
 func ResultSError(ctx *gin.Context, serr serror.SError) {
 	if serr == nil {
 		ctx.JSON(http.StatusOK, ResponseBody{
@@ -214,38 +239,38 @@ func ResultSError(ctx *gin.Context, serr serror.SError) {
 				}
 			}
 
-			/*if serr != nil {
-				ctx.AbortWithError(serr.Code(), serr)
-			}*/
+			if serr != nil {
+				result.Err = CaptureSErrors(serr)
+			}
 		}
 	}
 
-	body := ResponseBody{
-		Status:  result.Status,
-		Message: result.Message,
-	}
-
-	/*if serr != nil && ok {
+	if serr != nil && ok {
 		if result.Status != http.StatusBadRequest && result.Status != http.StatusUnauthorized {
-			ctx.AbortWithError(serr.Code(), serr)
+			result.Err = CaptureSErrors(serr)
 		} else {
 			log.Warn(serr)
 		}
 
-		ctx.JSON(result.Status, body)
+		ctx.JSON(result.Status, result)
 		return
-	}*/
+	}
 
-	ctx.JSON(result.Status, body)
+	ctx.JSON(result.Status, result)
 }
 
 func ResultError(ctx *gin.Context, code int, err error) {
-	result := mapping[code]
-	/*if result.Status != http.StatusBadRequest && result.Status != http.StatusUnauthorized {
-		if err != nil {
-			ctx.AbortWithError(500, err)
+	result, ok := mapping[code]
+	if err != nil && ok {
+		if result.Status != http.StatusBadRequest && result.Status != http.StatusUnauthorized {
+			result.Err = append(result.Err, ReturningError{
+				UserMessage:     err.Error(),
+				InternalMessage: err.Error(),
+				Code:            500,
+				MoreInfo:        "",
+			})
 		}
-	}*/
+	}
 
 	if result.Message["en"] == "" || result.Message["vn"] == "" {
 		if err != nil {
@@ -262,11 +287,6 @@ func ResultError(ctx *gin.Context, code int, err error) {
 
 	}
 
-	body := ResponseBody{
-		Status:  result.Status,
-		Message: result.Message,
-	}
-
-	ctx.JSON(result.Status, body)
+	ctx.JSON(result.Status, result)
 	return
 }
