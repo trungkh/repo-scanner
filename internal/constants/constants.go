@@ -52,5 +52,3 @@ const (
 	ScanningStatusSuccess    = "success"
 	ScanningStatusFailure    = "failure"
 )
-
-var ScanningInProgress bool

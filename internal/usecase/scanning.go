@@ -18,6 +18,7 @@ type scanningUsecase struct {
 	scanningRepository   internal.IScanningRepository
 	trxRepository        internal.ITrxRepository
 	grabScanner          internal.IGrabScanner
+	scanningInProgress   *bool
 }
 
 func NewScanningUsecase(store internal.RepositoryStore, trxRepo internal.ITrxRepository, grabScanner internal.IGrabScanner) internal.IScanningUsecase {
@@ -26,6 +27,7 @@ func NewScanningUsecase(store internal.RepositoryStore, trxRepo internal.ITrxRep
 		scanningRepository:   store.ScanningRepo,
 		trxRepository:        trxRepo,
 		grabScanner:          grabScanner,
+		scanningInProgress:   new(bool),
 	}
 }
 
@@ -83,14 +85,14 @@ func (s scanningUsecase) AddNewScanning(repo_id int64) (res model.ScanningRespon
 		}
 	}
 
-	if constants.ScanningInProgress == false {
+	if *s.scanningInProgress == false {
 		go s.StartScanningInQueue()
 	}
 	return
 }
 
 func (s scanningUsecase) StartScanningInQueue() (errx serror.SError) {
-	constants.ScanningInProgress = true
+	*s.scanningInProgress = true
 	log.Info("Start scanning...")
 	for {
 		// Limit should be 1 avoiding racing condition occuring in microservice architect
@@ -153,6 +155,6 @@ func (s scanningUsecase) StartScanningInQueue() (errx serror.SError) {
 		time.Sleep(1 * time.Second)
 	}
 	log.Info("Scanning done")
-	constants.ScanningInProgress = false
+	*s.scanningInProgress = false
 	return
 }
